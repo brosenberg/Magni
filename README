@@ -1,0 +1,84 @@
+MAGNI MANUAL
+v0.1
+
+Ben Rosenberg
+3 Nov 2010
+
+= Quickstart =
+== Sniffing ==
+Start MAGNI
+Run 'iflist' to see what interfaces you have available.
+Run 'listen' to begin listening on an interface.
+Run 'sniff to begin sniffing packets on the interface.
+CTRL+C to stop sniffing at any time.
+Use CTRL+D or 'exit' to quit MAGNI.
+
+Example:
+
+$ sudo ./magni.pl
+What do you require of MAGNI?
+MAGNI> iflist
+      eth0  inet:192.168.0.100  mask:255.255.255.0
+        lo  inet:127.0.0.0  mask:255.0.0.0
+Not currently listening on any interface.
+MAGNI> listen eth0
+Now listening on eth0
+MAGNI> sniff
+...
+
+== Scanning ==
+Start MAGNI
+Run 'scan $host $ports' to scan $host on port(s) $ports
+If $ports is not specified, ports 1-1024 are scanned.
+
+Example:
+$ ./magni.pl
+What do you require of MAGNI?
+MAGNI> scan 192.168.0.239
+Scanning 192.168.0.239
+192.168.0.239:22 open 
+192.168.0.239:111 open 
+192.168.0.239:139 open 
+192.168.0.239:445 open 
+192.168.0.239:894 open 
+5 ports open, 1019 closed
+
+= Overview =
+MAGNI is a very simple shell interface to a network sniffer and scanner. Currently its' capabilities are quite limited. It was written to be an example of how to perform various simple network tasks in a Perl script.
+Current sniffing is limited to tcpdump like output or passive service detection. More about passive service detection below. Do note that unless you have a user that can read directly from a network interface, the sniffing capability is useless unless MAGNI is run as root.
+Current scanning is limited to simple TCP connect() scans of given ports. These connect()s can do very simple service detection without the use of service probes.
+
+= General Usage =
+There are a handful of builtin functions described below. Various environment variables can also be set to change the behavior of certain builtins. This behavior is described below in the Environ section. This behavior will also be replaced once builtins are given commandline options.
+In addition to using 'exit' to end a MAGNI session, you can also issue CTRL+D. Though presently this only works if you have nothing else on the line.
+
+= Builtins =
+MAGNI presently has a few simple builtin functions. A listing and brief description of each can be found within MAGNI by running 'help'. Currently the builtins are simple enough that their brief description is sufficient to use them. The command listing is reproduced here for your convenience.
+
+Available commands:
+  ?          Print this help
+  clear      Clear the screen
+  env        Print environ contents
+  exit       Exit the shell
+  help       Print this help
+  history    Print command history
+  iflist     List available ifaces
+  listen     Set listening iface. ex: iface eth0
+  manual     Print detailed usage instructions
+  print      Print a string
+  scan       tcp connect() scan a host. ex: scan 192.168.0.56
+  sniff      Sniff packets from iface. End with CTRL+C.
+  stats      Report stats on the current listening iface.
+
+= The Environ =
+MAGNI stores user variables and environment variables in the 'environ'. This will almost certainly be renamed to the 'environment' in the next version. A description of each environment variable follows:
+
+  HIST_SIZE       The number of lines to story in the shell history.
+  MOTD            The message that greets the user upon starting MAGNI.
+  PRINT_DATA      Boolean. Whether or not to print the data portion of a packet when sniffing.
+  PRINT_PACKETS   Boolean. Whether or not to print the fields of a packet when sniffing. If set, SERVICE_DETECT is assumed to be 0 by MAGNI.
+  PROMISCUOUS     Boolean. Whether or not to sniff in promiscuous mode.
+  PROMPT          The prompt at the beginning of each line.
+  SERVICE_DETECT  Boolean. Whether or not to perform service detection when sniffing or scanning. For optimal results, make sure the service signatures hash is well populated. MAGNI can read the nmap-service-probes that ships with nmap and use those signatures to populate the hash.
+  SNAPLEN         The maximum number of bytes to capture at a time.
+  TIMEOUT         The number of milliseconds to wait before a packet times out.
