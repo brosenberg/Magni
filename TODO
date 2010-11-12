@@ -1,0 +1,11 @@
+Todo:
+  Cleanup code and add more comments
+  Automatically choose a device to sniff on during startup
+  Write pcap dumps to a file
+  Read pcap dumps from files
+  Arguments for commands
+  Network replay
+  ARP poisoning
+  Use of Readline
+   Navigate history
+   Arrow keys
