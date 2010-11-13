@@ -1,8 +1,11 @@
 MAGNI MANUAL
 v0.1
-
 Ben Rosenberg
-3 Nov 2010
+
+= Overview =
+MAGNI is a very simple shell interface to a network sniffer and scanner. Currently its' capabilities are quite limited. It was written to be an example of how to perform various simple network tasks in a Perl script.
+Current sniffing is limited to tcpdump like output or passive service detection. More about passive service detection below. Do note that unless you have a user that can read directly from a network interface, the sniffing capability is useless unless MAGNI is run as root.
+Current scanning is limited to simple TCP connect() scans of given ports. These connect()s can do very simple service detection without the use of service probes.
 
 = Quickstart =
 == Sniffing ==
@@ -42,11 +45,6 @@ Scanning 192.168.0.239
 192.168.0.239:445 open 
 192.168.0.239:894 open 
 5 ports open, 1019 closed
-
-= Overview =
-MAGNI is a very simple shell interface to a network sniffer and scanner. Currently its' capabilities are quite limited. It was written to be an example of how to perform various simple network tasks in a Perl script.
-Current sniffing is limited to tcpdump like output or passive service detection. More about passive service detection below. Do note that unless you have a user that can read directly from a network interface, the sniffing capability is useless unless MAGNI is run as root.
-Current scanning is limited to simple TCP connect() scans of given ports. These connect()s can do very simple service detection without the use of service probes.
 
 = General Usage =
 There are a handful of builtin functions described below. Various environment variables can also be set to change the behavior of certain builtins. This behavior is described below in the Environ section. This behavior will also be replaced once builtins are given commandline options.
