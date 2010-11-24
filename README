@@ -12,7 +12,7 @@ Current scanning is limited to simple TCP connect() scans of given ports. These 
 Start MAGNI
 Run 'iflist' to see what interfaces you have available.
 Run 'listen' to begin listening on an interface.
-Run 'sniff to begin sniffing packets on the interface.
+Run 'sniff' to begin sniffing packets on the interface.
 CTRL+C to stop sniffing at any time.
 Use CTRL+D or 'exit' to quit MAGNI.
 
@@ -54,19 +54,23 @@ In addition to using 'exit' to end a MAGNI session, you can also issue CTRL+D. T
 MAGNI presently has a few simple builtin functions. A listing and brief description of each can be found within MAGNI by running 'help'. Currently the builtins are simple enough that their brief description is sufficient to use them. The command listing is reproduced here for your convenience.
 
 Available commands:
-  ?          Print this help
-  clear      Clear the screen
-  env        Print environ contents
-  exit       Exit the shell
-  help       Print this help
-  history    Print command history
-  iflist     List available ifaces
-  listen     Set listening iface. ex: iface eth0
-  manual     Print detailed usage instructions
-  print      Print a string
-  scan       tcp connect() scan a host. ex: scan 192.168.0.56
-  sniff      Sniff packets from iface. End with CTRL+C.
-  stats      Report stats on the current listening iface.
+    ?          Print this help
+    clear      Clear the screen
+    close      Close a pcap file for writing
+    env        Print environ contents
+    exit       Exit the shell
+    help       Print this help
+    history    Print command history
+    iflist     List available ifaces
+    listen     Set listening iface. ex: iface eth0
+    lookup     Perform DNS lookup on a host. ex: lookup example.com
+    open       Open a pcap file for writing. ex: open dump.pcap
+    print      Print a string
+    readme     Print detailed usage instructions
+    scan       connect() scan a host. ex: scan 192.168.0.56
+    sniff      Sniff packets from iface. End with CTRL+C.
+    stats      Report stats on the current listening iface.
+    stop       Stop listening on current iface
 
 = The Environ =
 MAGNI stores user variables and environment variables in the 'environ'. This will almost certainly be renamed to the 'environment' in the next version. A description of each environment variable follows:
@@ -74,9 +78,10 @@ MAGNI stores user variables and environment variables in the 'environ'. This wil
   HIST_SIZE       The number of lines to story in the shell history.
   MOTD            The message that greets the user upon starting MAGNI.
   PRINT_DATA      Boolean. Whether or not to print the data portion of a packet when sniffing.
-  PRINT_PACKETS   Boolean. Whether or not to print the fields of a packet when sniffing. If set, SERVICE_DETECT is assumed to be 0 by MAGNI.
+  PRINT_PACKETS   Boolean. Whether or not to print the fields of a packet when sniffing. If set, SERVICE_DETECT and WRITE_PACKETS are treated as if set to 0.
   PROMISCUOUS     Boolean. Whether or not to sniff in promiscuous mode.
   PROMPT          The prompt at the beginning of each line.
   SERVICE_DETECT  Boolean. Whether or not to perform service detection when sniffing or scanning. For optimal results, make sure the service signatures hash is well populated. MAGNI can read the nmap-service-probes that ships with nmap and use those signatures to populate the hash.
   SNAPLEN         The maximum number of bytes to capture at a time.
   TIMEOUT         The number of milliseconds to wait before a packet times out.
+  WRITE_PACKETS   Boolean. Whether or not to write packets to a pcap dump file. If there is not currently an open output file, this option is treated as if set to 0. If this option is set, SERVICE_DETECT is treated as if set to 0.

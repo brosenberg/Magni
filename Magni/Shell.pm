@@ -31,19 +31,13 @@ our $environ = {
     "MOTD" => "What do you require of MAGNI?",
     "PROMPT" => "MAGNI> ",
     "HIST_SIZE" => 500,
-    "PROMISCUOUS" => 1,
-    "SNAPLEN" => 1024,
-    "TIMEOUT" => 20,
-    "PRINT_DATA" => 1,
-    "PRINT_PACKETS" => 1,
-    "SERVICE_DETECT" => 0,
 };
 
 # Builtin commands. The key is the name of the command, the hash it points to contains "sub" which is the subroutine that will be run when the builtin is run, and "desc" a brief description of the command.
 our $builtins = {
     "?" => {
                 "sub"  => \&sh_help,
-                "desc" => "Print this help",
+                "desc" => "Print general help or help for a function. ex: help env",
               },
     "clear" => {
                 "sub"  => sub { system("clear"); },
@@ -59,20 +53,12 @@ our $builtins = {
               },
     "help" => {
                 "sub"  => \&sh_help,
-                "desc" => "Print this help",
+                "desc" => "Print general help or help for a function. ex: help env",
               },
     "history" => {
                 "sub"  => \&sh_history,
                 "desc" => "Print command history",
               },
-    #"iflist" => {
-                #"sub"  => \iflist,
-                #"desc" => "List available ifaces",
-              #},
-    #"listen" => {
-                #"sub"  => \set_iface,
-                #"desc" => "Set listening iface. ex: listen eth0",
-              #},
     "readme" => {
                 "sub"  => \&sh_readme,
                 "desc" => "Print detailed usage instructions",
@@ -81,18 +67,6 @@ our $builtins = {
                 "sub"  => \&sh_print,
                 "desc" => "Print a string",
                },
-    #"sniff" => {
-                #"sub"  => \read_pkts,
-                #"desc" => "Sniff packets from iface. End with CTRL+C.",
-              #},
-    #"stats" => {
-                #"sub"  => \pcap_stats,
-                #"desc" => "Report stats on the current listening iface.",
-              #},
-    #"scan" => {
-                #"sub"  => \scan_host,
-                #"desc" => "tcp connect() scan a host. ex: scan 192.168.0.56",
-              #},
 };
 
 ############################## Shell Subroutines ###############################
@@ -104,8 +78,30 @@ sub get_input {
     &sh_readline($input);
 }
 
-# Print basic information about all builtins
+# Check to see if we were asked to provide help for a specific function.
+# If we were, check to see if there is a manual file for the function.
+# If so, print it. If not, print the description for the function, if it exists.
+# If it doesn't, let the user know they are beyond help.
+# If we aren't asked to provide help for a specific function, print general help
 sub sh_help {
+    my ($arg) = @_;
+    if ( defined $arg ) {
+        if ( defined $builtins->{"$arg"}->{"man"} &&
+             open(my $FH, "<", "$builtins->{$arg}->{man}") 
+        ) {
+            while (<$FH>) { print; }
+        } elsif ( defined $builtins->{"$arg"}->{"desc"} ) {
+            print $builtins->{"$arg"}->{"desc"},"\n";
+        } else {
+            print "No help available for: $arg\n";
+        }
+    } else {
+        &sh_help_general;
+    }
+}
+
+# Print basic information about all builtins
+sub sh_help_general {
     print "Available commands:\n";
     foreach my $builtin ( sort keys %$builtins ) {
         printf "    %-10s %s\n",

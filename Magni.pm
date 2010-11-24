@@ -25,12 +25,17 @@ our @EXPORT = qw( warn_msg );
 our @EXPORT_OK = qw( $internals );
 use Net::Pcap;
 
+my $last_ctrl_c = 0;
+my $ctrl_c_ct = 0;
+
 # Non-user definable options
 our $internals = {
-    "capture_iface_name" => "",
-    "capture_iface" => "",
-    "ifaces" => {},
-    "interrupt" => 0,
+    "capture_iface_name" => undef, # Name of pcap capture interface
+    "capture_iface"      => undef, # pcap capture interface pointer
+    "pcap_output_name"   => undef, # Name of output pcap dump file
+    "pcap_output"        => undef, # pcap dump file pointer
+    "ifaces"             => {},
+    "interrupt"          => 0,
 };
 
 sub clear_ctrl_c {
@@ -38,7 +43,15 @@ sub clear_ctrl_c {
 }
 
 sub set_ctrl_c {
-    $internals->{"interrupt"} = 1;
+    if ( $last_ctrl_c == time ) {
+        if ( $ctrl_c_ct++ > 2 ) {
+            exit;
+        }
+    } else {
+        $last_ctrl_c = time;
+        $ctrl_c_ct = 0;
+        $internals->{"interrupt"} = 1;
+    }
 }
 
 # Change a non-delimited MAC into a delimited MAC
@@ -71,7 +84,7 @@ sub warn_msg {
 }
 
 END {
-    if ( "$internals->{capture_iface_name}" ne "" ) {
+    if ( defined $internals->{"capture_iface_name"} ) {
         Net::Pcap::pcap_close( $internals->{"capture_iface"} );
     }
 }

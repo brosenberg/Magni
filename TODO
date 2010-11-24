@@ -1,4 +1,5 @@
 Todo:
+  Put the subroutines in an order that actually makes sense
   Cleanup code and add more comments
   Automatically choose a device to sniff on during startup
   Write pcap dumps to a file
@@ -9,3 +10,13 @@ Todo:
   Use of Readline
    Navigate history
    Arrow keys
+  Identify DNS requests
+
+  Stats:
+    Track what DNS servers hosts use
+    Track hostnames a host associates with an IP
+    Give statistics on which hosts communicate with one another
+      Specifically, what ports they talk to each other on
+    Detect port knocking
+    Inspect packet data for tunnelling
+    

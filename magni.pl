@@ -38,25 +38,50 @@ $SIG{INT} = sub {
 $SIG{QUIT} = \&Magni::sig_exit;
 $SIG{TERM} = \&Magni::sig_exit;
 
+$environ->{"PROMISCUOUS"}    =     1;
+$environ->{"SNAPLEN"}        =  1500; # bytes
+$environ->{"TIMEOUT"}        =   500; # milliseconds
+$environ->{"PRINT_DATA"}     =     1;
+$environ->{"PRINT_PACKETS"}  =     1;
+$environ->{"WRITE_PACKETS"}  =     0;
+$environ->{"SERVICE_DETECT"} =     0;
+
+$builtins->{"close"} = {
+    "sub"  => \&Magni::Network::close_pcap_output,
+    "desc" => "Close a pcap file for writing",
+  };
 $builtins->{"iflist"} = {
-    "sub" => \&Magni::Network::iflist,
+    "sub" => \&Magni::Network::print_iflist,
     "desc" => "List available ifaces",
   };
 $builtins->{"listen"} = {
     "sub"  => \&Magni::Network::set_iface,
     "desc" => "Set listening iface. ex: iface eth0",
   };
+$builtins->{"lookup"} = {
+    "sub"  => \&Magni::Network::host_lookup,
+    "desc" => "Perform DNS lookup on a host. ex: lookup example.com",
+  };
+$builtins->{"open"} = {
+    "sub"  => \&Magni::Network::set_pcap_output,
+    "desc" => "Open a pcap file for writing. ex: open dump.pcap",
+  };
 $builtins->{"sniff"} = {
-    "sub"  => \&Magni::Network::read_pkts,
+    "sub"  => \&Magni::Network::sniff_pkts,
     "desc" => "Sniff packets from iface. End with CTRL+C.",
   };
 $builtins->{"stats"} = {
-    "sub"  => \&Magni::Network::pcap_stats,
+    "sub"  => \&Magni::Network::print_pcap_stats,
     "desc" => "Report stats on the current listening iface.",
+  };
+$builtins->{"stop"} = {
+    "sub"  => \&Magni::Network::close_iface,
+    "desc" => "Stop listening on current iface",
   };
 $builtins->{"scan"} = {
     "sub"  => \&Magni::Network::scan_host,
-    "desc" => "tcp connect() scan a host. ex: scan 192.168.0.56",
+    "desc" => "connect() scan a host. ex: scan 192.168.0.56",
+    "man"  => "$program_dir/Manual/scan",
   };
 
 

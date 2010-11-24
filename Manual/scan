@@ -1,0 +1,22 @@
+
+ scan 
+
+Perform a TCP connect() scan of a host. Optionally provide a list of specific
+ports to scan. If no ports are listed, ports 1-1024 will be scanned.
+If SERVICE_DETECT is set, service detection will be attempted on each open port.
+
+Examples:
+scan host 192.168.0.56
+
+  MAGNI> scan 192.168.0.56
+  Scanning 192.168.0.56
+  192.168.0.56:22 open 
+  192.168.0.56:23 open 
+  2 ports open, 1022 closed
+
+Scan host example.com on ports 53-99,1024-2048,5112
+
+  MAGNI> scan example.com 53-99,1024-2048,5112
+  Scanning example.com
+  0 ports open, 1073 closed
+
